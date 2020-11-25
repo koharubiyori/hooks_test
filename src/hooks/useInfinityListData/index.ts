@@ -1,15 +1,7 @@
 import { Dispatch, SetStateAction, useState } from 'react'
 import useStateWithRef from '../useStateWithRef'
 
-export enum InfinityListStatus {
-  error,
-  initial,
-  loading,
-  success,
-  allLoaded,
-  empty
-  // 'error' | 'initial' | 'loading' | 'success' | 'allLoaded' | 'empty'
-}
+export type InfinityListStatus = 'error' | 'initial' | 'loading' | 'success' | 'allLoaded' | 'empty'
 
 export type InfinityListDataGenerator<ListItem = any, LoadNextArgs = any> = 
   (nextPage: number, loadNextArgs?: LoadNextArgs) => Promise<{ 
@@ -33,32 +25,46 @@ export interface InfinityListDataOptions {
   incrementPageNumber: number
 }
 
-export default function useInfinityListData<ListItem = any, LoadNextArgs = any>(
-  dataGenerator: InfinityListDataGenerator,
-  options: InfinityListDataOptions
-): InfinityListDataGenerator<ListItem, LoadNextArgs> {
-  const [list, setList, listRef] = useStateWithRef<ListItem[]>([])
-  const [status, setStatus, statusRef] = useStateWithRef<InfinityListStatus>(InfinityListStatus.initial)
-  const [currentPage, setCurrentPage, currentPageRef] = useStateWithRef(options.defaultPage || 0)
-  const [totalPage, setTotalPage, totalPageRef] = useStateWithRef(0)
+// export default function useInfinityListData<ListItem = any, LoadNextArgs = any>(
+//   dataGenerator: InfinityListDataGenerator,
+//   options: InfinityListDataOptions
+// ): InfinityListDataGenerator<ListItem, LoadNextArgs> {
+//   const [list, setList, listRef] = useStateWithRef<ListItem[]>([])
+//   const [status, setStatus, statusRef] = useStateWithRef<InfinityListStatus>('initial')
+//   const [currentPage, setCurrentPage, currentPageRef] = useStateWithRef(options.defaultPage || 0)
+//   const [totalPage, setTotalPage, totalPageRef] = useStateWithRef(0)
 
-  const incrementPageNumber = options.incrementPageNumber || 1
+//   const incrementPageNumber = options.incrementPageNumber || 1
 
-  function loadNext(args?: LoadNextArgs): Promise<void> {
-    if ([
-      InfinityListStatus.allLoaded, 
-      InfinityListStatus.empty
-    ].includes(statusRef.current)) return Promise.resolve()
+//   function loadNext(args?: LoadNextArgs): Promise<void> {
+//     if (['allLoaded', 'empty'].includes(statusRef.current)) return Promise.resolve()
 
-    setStatus(InfinityListStatus.loading)
+//     setStatus('loading')
     
-    const nextPage = currentPage + incrementPageNumber
-    return dataGenerator(nextPage, args)
-      .then(data => {
-        
-      })
-      .catch(e => {
-        
-      })
-  }
-}
+//     const nextPage = currentPage + incrementPageNumber
+//     return dataGenerator(nextPage, args)
+//       .then(data => {
+//         setTotalPage(data.totalPage)
+//         setCurrentPage(data.currentPage)
+
+//         let nextStatus: InfinityListStatus = 'success'
+//         if (data.list.length === 0 && listRef.current.length === 0) {
+//           nextStatus = 'empty'
+//         } else if ((data.currentPage >= data.totalPage)) {
+//           nextStatus = 'allLoaded'
+//         }
+
+//         setList(prevVal => prevVal.concat(data.list))
+//         setStatus(nextStatus)
+//       })
+//       .catch(e => {
+//         setStatus('error')
+//         throw e
+//       })
+//   }
+
+//   function clear() {
+//     setList([])
+//     setStatus('initial')
+//   }
+// }

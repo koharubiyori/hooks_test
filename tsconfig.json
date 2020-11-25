@@ -23,5 +23,4 @@
   "include": [
     "src"
   ],
-  "extends": "./tsconfig.custom.json"
 }
